@@ -8,7 +8,9 @@
 angular.module('lazyModel', [])
 .directive('lazyModel', ['$parse', '$compile', function($parse, $compile) {
   return {
-    restrict: 'A',  
+    restrict: 'A',
+    priority: 100,
+    terminal: true,
     require: '^form',
     scope: true,
     compile: function compile(elem, attr) {
@@ -29,10 +31,19 @@ angular.module('lazyModel', [])
           while(form[0].tagName !== 'FORM') {
             form = form.parent();
           }
+          var formCtrl = form.controller('form');
           form.bind('submit', function() {
-            scope.$apply(function() {
-                ngModelSet(scope.$parent, scope.buffer);
-            });
+            // form valid - save new value
+            if (formCtrl.$valid) {
+              scope.$apply(function() {
+                  ngModelSet(scope.$parent, scope.buffer);
+              });
+            // form invalid - do reset
+            } else {
+              scope.$apply(function() {
+                  scope.buffer = ngModelGet(scope.$parent);
+              });
+            }
          });
          form.bind('reset', function(e) {
             e.preventDefault();

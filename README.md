@@ -9,7 +9,10 @@ Usage
 <input type="text" lazy-model="user.name">
 ````
 
-Full example: http://jsfiddle.net/8btk5/4/
+Libe Demo
+===
+http://jsfiddle.net/8btk5/5/
+
 
 Don't forget to include module dependency
 ````js
