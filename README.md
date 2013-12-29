@@ -66,8 +66,10 @@ of form and controls.
 <form name="frm" ng-submit="submit()" ng-show="formVisible">
 ...
   <input type="text" name="username" lazy-model="user.name">
+  ...
+  <button type="reset" ng-click="cancel()">cancel</button>
 ````
-In controller:
+In controller you should define both `submit` and `cancel` handlers:
 ````js
 $scope.submit = function() {
   if ($scope.frm.username.$modelValue.length > 10) {
@@ -77,9 +79,15 @@ $scope.submit = function() {
     $scope.formVisible = false;
   }  
 };
+
+$scope.cancel = function() {
+  $scope.frm.username.$setValidity('maxlength', true);
+  $scope.formVisible = false;
+}
+
 ````
 
-Live demo: http://jsfiddle.net/8btk5/9/ 
+Live demo: http://jsfiddle.net/8btk5/10/ 
 
 ### How to include it in my project?
 1. [Download](http://vitalets.github.io/lazy-model/lazyModel.js) and include **lazyModel.js**
