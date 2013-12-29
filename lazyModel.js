@@ -6,7 +6,8 @@
  */
 
 angular.module('lazyModel', [])
-.directive('lazyModel', ['$parse', '$compile', function($parse, $compile) {
+.directive('lazyModel', ['$parse', '$compile', '$timeout', 
+  function($parse, $compile, $timeout) {
   return {
     restrict: 'A',
     priority: 500,
@@ -21,12 +22,14 @@ angular.module('lazyModel', [])
         elem.attr('ng-model', 'buffer');
         // remove lazy-model attribute to exclude recursion
         elem.removeAttr("lazy-model");
+        // store compiled fn of new elem
+        var compiled = $compile(elem); 
         return {
           pre: function(scope, elem) {
             // initialize buffer value as copy of original model 
             scope.buffer = ngModelGet(scope.$parent);
             // compile element with ng-model directive poining to buffer value   
-            $compile(elem)(scope);
+            compiled(scope);
           },
           post: function postLink(scope, elem, attr) {
             // bind form submit to write back final value from buffer
@@ -36,21 +39,18 @@ angular.module('lazyModel', [])
             }
             var formCtrl = form.controller('form');
             form.bind('submit', function() {
-              // form valid - save new value
-              if (formCtrl.$valid) {
-                scope.$apply(function() {
-                    ngModelSet(scope.$parent, scope.buffer);
-                });
-              // form invalid - do reset
-              } else {
-                scope.$apply(function() {
-                    scope.buffer = ngModelGet(scope.$parent);
-                });
-              }
+              // this submit handler must be called LAST after all other handlers
+              // to get final formCtrl state. The only way seems to call it in
+              // the next tick via $timeout
+              $timeout(function() {
+                if (formCtrl.$valid) {
+                  // form valid - save new value
+                  ngModelSet(scope.$parent, scope.buffer);
+                } 
+              });
             });
-            form.bind('reset', function(e) {
-              e.preventDefault();
-              scope.$apply(function() {
+            form.bind('reset', function() {
+              $timeout(function() {
                   scope.buffer = ngModelGet(scope.$parent);
               });
             });
