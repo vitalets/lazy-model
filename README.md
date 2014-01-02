@@ -4,8 +4,8 @@ lazy-model
 AngularJS directive that works like `ng-model` but accept changes only when form is submitted (and cancel changes otherwise).
 
 ### Why this is needed?
-AngularJS 2-way binding is awesome! When you change model - all views are updating instantly.  
-But when dealing with forms I often need more transactional way: input something and confirm changes or reject to previous state. Official way to do it - is create copy of model, link it with form and write changes back to original model when form is submitted (see http://docs.angularjs.org/guide/forms).  
+AngularJS 2-way binding is good feature: you change model - and all views are updated instantly.  
+But when dealing with forms I often need more transactional way: input something and accept changes or decline it. Official way to do it requires additional code in controller: create copy of model, link it with form and write changes back to original model when form is submitted (see http://docs.angularjs.org/guide/forms).  
 Being too lazy, I tried to put all that stuff into **lazy-model** directive.
 
 ### How to use it?
@@ -21,7 +21,7 @@ Being too lazy, I tried to put all that stuff into **lazy-model** directive.
 ````
 
 Now you can change username, but it will be saved to model only when you press **save**.   
-If you press **cancel** - your changes will be reverted.   
+If you press **cancel** - your changes will be declined.   
 Try out demo: http://jsfiddle.net/8btk5/6/
 
 **It can be useful for popup forms and modal dialogs.**  
@@ -39,7 +39,7 @@ Live demo: http://jsfiddle.net/8btk5/7/
 ### How to validate?
 Basically there are two ways of validation:
 
-#### 1. Instant validation
+#### 1. On-change validation (instant)
 Use normal AngularJS validation [described in docs](http://docs.angularjs.org/guide/forms).
 For example, `ng-maxlength` validator:
 ````html
@@ -47,7 +47,7 @@ For example, `ng-maxlength` validator:
 ...
   <input type="text" name="username" lazy-model="user.name" ng-maxlength="10">
 ````
-In controller add submit handler:
+And check `form.$valid' in submit handler in controller:
 ````js
 $scope.submit = function() {    
   if ($scope.frm.$valid) {
@@ -88,6 +88,33 @@ $scope.cancel = function() {
 ````
 
 Live demo: http://jsfiddle.net/8btk5/10/ 
+
+### How to send data on server?
+Please note that in `ng-submit` hook original models are not updated yet.
+You may use it for validation but not for sending data on server.  
+To send data there is special attribute of `<form>` called `lazy-submit`. 
+Inside this hook models are updated and you can freely manipulate your models.
+
+````html
+<form name="frm" ng-submit="submit()" lazy-submit="save()" ng-show="formVisible">
+...
+  <input type="text" name="username" lazy-model="user.name" ng-maxlength="10">
+````
+
+In controller:
+````js
+$scope.submit = function() {    
+  if ($scope.frm.$valid) {
+    $scope.formVisible = false;
+  }
+};
+
+$scope.save = function() { 
+  sendToServer($scope.user);   
+};
+````
+
+Live demo: 
 
 ### How to include it in my project?
 1. [Download](http://vitalets.github.io/lazy-model/lazyModel.js) and include **lazyModel.js**
