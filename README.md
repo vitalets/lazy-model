@@ -47,7 +47,7 @@ For example, `ng-maxlength` validator:
 ...
   <input type="text" name="username" lazy-model="user.name" ng-maxlength="10">
 ````
-And check `form.$valid' in submit handler in controller:
+And check `form.$valid` in submit handler in controller:
 ````js
 $scope.submit = function() {    
   if ($scope.frm.$valid) {
