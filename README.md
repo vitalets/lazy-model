@@ -109,7 +109,7 @@ $scope.save = function() {
 };
 ````
 
-Live demo: http://jsfiddle.net/8btk5/11/
+Live demo: http://jsfiddle.net/8btk5/12/
 
 ### How to include it in my project?
 1. [Download](http://vitalets.github.io/lazy-model/lazyModel.js) and include **lazyModel.js**
