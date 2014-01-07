@@ -1,7 +1,7 @@
 lazy-model
 ==========
 
-AngularJS directive that works like `ng-model` but accept changes only when form is submitted (and cancel changes otherwise).
+AngularJS directive that works like `ng-model` but accept changes only when form is submitted (otherwise changes are cancelled).
 
 ### Why this is needed?
 AngularJS 2-way binding is good feature: you change model - and all views are updated instantly.  
@@ -96,20 +96,15 @@ To send data there is special attribute of `<form>` called `lazy-submit`.
 Inside this hook models are updated and you can freely manipulate your models.
 
 ````html
-<form name="frm" ng-submit="submit()" lazy-submit="save()" ng-show="formVisible">
+<form name="frm" lazy-submit="save()" ng-show="formVisible">
 ...
   <input type="text" name="username" lazy-model="user.name" ng-maxlength="10">
 ````
 
 In controller:
 ````js
-$scope.submit = function() {    
-  if ($scope.frm.$valid) {
-    $scope.formVisible = false;
-  }
-};
-
 $scope.save = function() { 
+  $scope.formVisible = false;
   sendToServer($scope.user);   
 };
 ````
