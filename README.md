@@ -24,7 +24,7 @@ Now you can change username, but it will be saved to model only when you press *
 If you press **cancel** - your changes will be declined.   
 Try out demo: http://jsfiddle.net/8btk5/6/
 
-**It can be useful for popup forms and modal dialogs.**  
+It can be useful for **popup forms** and **modal dialogs.**  
 For example, popup form: 
 ````html
 <form ng-submit="formVisible=false" ng-show="formVisible">
