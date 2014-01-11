@@ -26,18 +26,21 @@ angular.module('lazyModel', [])
           var ngModelGet = $parse($attrs.lazyModel);
           var ngModelSet = ngModelGet.assign;
 
+          // accept changes
           this.accept = function() {
             ngModelSet($scope.$parent, $scope.buffer);
           };
 
-          this.cancel = function() {
+          // reset changes
+          this.reset = function() {
             $scope.buffer = ngModelGet($scope.$parent);
           };
 
-          // init scope.buffer with value from original model
-          this.cancel();
-        }
-      ],
+          // watch for original model change (and initialization also)
+          $scope.$watch($attrs.lazyModel, angular.bind(this, function (newValue, oldValue) {
+            this.reset();
+          }));
+        }],
       compile: function compile(elem, attr) {
         // set ng-model to buffer in directive scope (nested)
         elem.attr('ng-model', 'buffer');
@@ -91,9 +94,9 @@ angular.module('lazyModel', [])
               form.bind('reset', function(e) {
                 e.preventDefault();
                 $timeout(function() {
-                  // cancel changes
+                  // reset changes
                   for (var i = 0; i < parentCtrl.$lazyControls.length; i++) {
-                    parentCtrl.$lazyControls[i].cancel();
+                    parentCtrl.$lazyControls[i].reset();
                   }
                 });
               });
