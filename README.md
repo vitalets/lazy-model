@@ -3,6 +3,21 @@ lazy-model
 
 AngularJS directive that works like `ng-model` but accept changes only when form is submitted (otherwise changes are cancelled).
 
+--------------------
+
+##UPDATE!!!
+As of Angular 1.3 there is [ngModelOptions](https://docs.angularjs.org/api/ng/directive/ngModelOptions) directive that allows to achive the same behavior natively
+````html
+  <form name="userForm">
+    <input type="text" ng-model="user.name" ng-model-options="{ updateOn: 'submit' }" name="userName">
+    <button type="submit">save</button>
+    <button type="button"  ng-click="userForm.userName.$rollbackViewValue();">cancel</button>
+  </form>
+````
+jsfiddle: http://jsfiddle.net/8btk5/104/
+So you don't need lazy-model any more!
+----------------------
+
 ### Why this is needed?
 AngularJS 2-way binding is good feature: you change model - and all views are updated instantly.  
 But when dealing with forms I often need more transactional way: input something and accept changes or decline it. Official way to do it requires additional code in controller: create copy of model, link it with form and write changes back to original model when form is submitted (see http://docs.angularjs.org/guide/forms).  
