@@ -1,0 +1,18 @@
+<head>
+  <title>lazy-model</title>
+  <script src="angular-1.2.26.js"></script>
+  <script src="../lazyModel.js"></script>
+  <script src="index.js"></script>
+</head>
+<body>
+  <div ng-app="app" ng-controller="Ctrl">
+    <form>
+      <input type="text" lazy-model="user.name">
+      <button type="submit">save</button>
+      <button type="reset">cancel</button>
+    </form>
+    <br>    
+    <pre> {{user || json}} </pre>     
+  </div>
+<body>
+</html>
